@@ -2,7 +2,7 @@
 "
 " HGRev
 " Mahlon E. Smith <mahlon@martini.nu>
-" $Id: hgrev.vim,v 285603587539 2010/07/07 23:47:28 mahlon $
+" $Id: hgrev.vim,v 595320486f69 2012/09/12 17:45:25 mahlon $
 "
 " Simplistic file revision checker, meant for adding current revision
 " information to the statusbar, a la:
@@ -13,7 +13,7 @@
 if exists( 'hgrev_loaded' )
 	finish
 endif
-let hgrev_loaded = '$Rev: 285603587539 $'
+let hgrev_loaded = '$Rev: 595320486f69 $'
 
 " }}}
 " Defaults for misc settings {{{
@@ -70,6 +70,13 @@ function! <SID>RefreshMercurialRev()
 	" Find the closest HG root for the buffer. 'hg root' won't do it, since
 	" it works off the cwd, and we need the nearest root from the filename.
 	"
+
+	" (we're unlikely to get lucky finding '.hg' in http:// or similar)
+	"
+	if matchstr(bufname('%'), "^[^:/]\\+://") != ''
+		return
+	endif
+
 	let l:searchpaths = split( expand('%:p:h'), '/' )
 	let l:dircount = len(l:searchpaths)
 	let l:root = ''
